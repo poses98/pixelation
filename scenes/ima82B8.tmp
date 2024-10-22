@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://7pyql0b0tc48"]
+
+[ext_resource type="Script" path="res://scripts/image_splitter.gd" id="1_x3pmq"]
+[ext_resource type="Texture2D" uid="uid://cusu8ctebb63v" path="res://img/ear.png" id="2_ekm3f"]
+
+[node name="ImageSplitter" type="Node2D"]
+script = ExtResource("1_x3pmq")
+image = ExtResource("2_ekm3f")
+
+[node name="Image" type="Sprite2D" parent="."]
+position = Vector2(421, 278)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ekm3f")
