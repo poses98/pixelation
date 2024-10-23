@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://7pyql0b0tc48"]
+
+[ext_resource type="Script" path="res://scripts/image_splitter.gd" id="1_x3pmq"]
+[ext_resource type="Texture2D" uid="uid://bvnrmaomrfkel" path="res://img/ear.png" id="2_uq8hc"]
+[ext_resource type="PackedScene" uid="uid://bowy0gq8n7ql7" path="res://scenes/star_selectable.tscn" id="3_3ja23"]
+
+[node name="ImageSplitter" type="Node2D"]
+script = ExtResource("1_x3pmq")
+image = ExtResource("2_uq8hc")
+star_scene = ExtResource("3_3ja23")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(245.665, 184.325)

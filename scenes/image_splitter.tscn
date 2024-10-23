@@ -1,14 +1,50 @@
-[gd_scene load_steps=3 format=3 uid="uid://7pyql0b0tc48"]
+[gd_scene load_steps=9 format=4 uid="uid://7pyql0b0tc48"]
 
 [ext_resource type="Script" path="res://scripts/image_splitter.gd" id="1_x3pmq"]
-[ext_resource type="Texture2D" uid="uid://dfikereubje2j" path="res://img/front32x64.png" id="2_ayy0b"]
+[ext_resource type="Texture2D" uid="uid://bvnrmaomrfkel" path="res://img/ear.png" id="2_uq8hc"]
+[ext_resource type="PackedScene" uid="uid://bowy0gq8n7ql7" path="res://scenes/star_selectable.tscn" id="3_3ja23"]
+[ext_resource type="Texture2D" uid="uid://o7u26butlivu" path="res://img/stars/bg1.png" id="4_7grkj"]
+[ext_resource type="Texture2D" uid="uid://mdtui6ipgmsy" path="res://img/stars/bg2.png" id="5_tj8rh"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sd5hv"]
+texture = ExtResource("4_7grkj")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i52rp"]
+texture = ExtResource("5_tj8rh")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_pfvp6"]
+sources/0 = SubResource("TileSetAtlasSource_sd5hv")
+sources/1 = SubResource("TileSetAtlasSource_i52rp")
 
 [node name="ImageSplitter" type="Node2D"]
 script = ExtResource("1_x3pmq")
-image = ExtResource("2_ayy0b")
-metadata/_edit_group_ = true
+image = ExtResource("2_uq8hc")
+star_scene = ExtResource("3_3ja23")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture_filter = 1
 position = Vector2(245.665, 184.325)
-scale = Vector2(5, 5)
+
+[node name="ConstelationContainer" type="Node2D" parent="."]
+position = Vector2(247.5, 108.885)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAAEABAAAAABAAAAAAATABEAAAABAAEAAAAfAAcAAAAAAAEAAAATAAUAAAABAAEAAAALAAQAAAAAAAAAAAAHAAgAAAABAAAAAAAGAA0AAAABAAEAAAANAA8AAAAAAAAAAAAbAA8AAAAAAAAAAAAlAAsAAAABAAAAAAAmAAUAAAAAAAAAAAAlAAEAAAABAAEAAAAgAAEAAAAAAAEAAAAhABEAAAAAAAAAAAAXABMAAQAAAAAAAAAdABQAAQAAAAAAAFAjABQAAQAAAAEAAAAUAAEAAQAAAAEAAAACAAMAAQAAAAEAAAAVAAoAAAAAAAAAAAAbAAwAAAABAAEAAAAMABMAAAAAAAAAAAAEABQAAAABAAEAAAABABEAAAABAAEAAAABAAwAAAAAAAAAAAABAAcAAAAAAAEAAAAEAAUAAAAAAAAAAAAHAAIAAAABAAEAAAAdAAAAAAABAAAAAAApAAQAAAAAAAAAAAAsABIAAAAAAAEAAAAmABUAAAABAAEAAAAlABEAAAAAAAEAAAAJABMAAAABAAAAAAA=")
+tile_set = SubResource("TileSet_pfvp6")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 587.0
+offset_right = 639.0
+offset_bottom = 23.0
+text = "0/10"
+horizontal_alignment = 2
+vertical_alignment = 1
