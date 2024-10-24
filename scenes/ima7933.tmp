@@ -28,7 +28,6 @@ sources/1 = SubResource("TileSetAtlasSource_i52rp")
 script = ExtResource("1_x3pmq")
 image = ExtResource("2_t34n5")
 star_scene = ExtResource("3_3ja23")
-threshold_distance = 50
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false

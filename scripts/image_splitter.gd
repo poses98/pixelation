@@ -3,6 +3,7 @@ extends Node2D
 
 @export var image:CompressedTexture2D;
 @export var star_scene:PackedScene
+@export var threshold_distance:int
 
 var size:Vector2
 var edgePoints = []
@@ -71,27 +72,33 @@ func instantiate_stars():
 	var canvas_size = get_viewport_rect().size
 	var scale_factor_x = canvas_size.x / size.x / 4
 	var scale_factor_y = canvas_size.x / size.y / 4
-	var modulus = 11
+	var modulus = 1
 	var count = 0
+	$ConstelationContainer.position= Vector2(rng.randi_range(0+canvas_size.x/6, canvas_size.x-canvas_size.x/6), rng.randi_range(0+canvas_size.y/4, canvas_size.y-canvas_size.y/2))
 	for point in edgePoints:
 		if count % modulus == 0 || point.y == 0 || point.y == image.get_height()-rng.randi_range(1,1) || point.y == image.get_height()/2 + rng.randi_range(-3,3) :
 			var star_instance = star_scene.instantiate()
 			$ConstelationContainer.add_child(star_instance)
 			star_instance.position = Vector2(point.x * scale_factor_x, point.y * scale_factor_y)
 		count = count + 1
-	var threshold_distance = 300.0
-
-	for point in range(edgePoints.size() / 10):
+	
+	var start_out = true;
+	#TODO check if there are any stars out of the canvas, if so rng the $ConstelationContainer.position again
+	while start_out:
+		for edge_point in $ConstelationContainer.get_children():
+			pass
+	for point in range(edgePoints.size()):
 		var star_instance = star_scene.instantiate()
 		add_child(star_instance)
-		var new_position
+		var new_position = Vector2.ZERO
 		var too_close = true
 		while too_close:
 			new_position = Vector2(rng.randi_range(0, canvas_size.x), rng.randi_range(0, canvas_size.y))
 			too_close = false 
-			for edge_point in edgePoints:
-				if new_position.distance_to(edge_point) < threshold_distance:
-					print(new_position.distance_to(edge_point))
+			for edge_point in $ConstelationContainer.get_children():
+				var distance_between = new_position.distance_to(edge_point.global_position)
+				if  distance_between < threshold_distance:
+					print(new_position.distance_to(edge_point.position))
 					too_close = true
 					print("Too close to an edge star")
 					break 
