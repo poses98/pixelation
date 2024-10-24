@@ -27,7 +27,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	$Label.text = get_stars_remaining()
 	
-	
+
 func process_edges():
 	var start_time = Time.get_ticks_msec()  # Tiempo de inicio
 	var l_found = false
@@ -64,30 +64,34 @@ func process_edges():
 	print("Tiempo de ejecución optimizado (ms): ", end_time - start_time)
 	print("Píxeles ahorrados: ", pixels_saved)
 
-
 func isEmptyPixel(position:Vector2i):
 	return image.get_image().get_pixel(position.x,position.y).a == 0
 
 func instantiate_stars():
 	var canvas_size = get_viewport_rect().size
 	var scale_factor_x = canvas_size.x / size.x / 4
-	var scale_factor_y = canvas_size.x / size.y / 4
-	var modulus = 1
+	var scale_factor_y = canvas_size.x / size.x / 4
 	var count = 0
 	$ConstelationContainer.position= Vector2(rng.randi_range(0+canvas_size.x/6, canvas_size.x-canvas_size.x/6), rng.randi_range(0+canvas_size.y/4, canvas_size.y-canvas_size.y/2))
 	for point in edgePoints:
-		if count % modulus == 0 || point.y == 0 || point.y == image.get_height()-rng.randi_range(1,1) || point.y == image.get_height()/2 + rng.randi_range(-3,3) :
+		if point.y == edgePoints[0].y || point.y == edgePoints[edgePoints.size()-1].y || point.y == image.get_height()/2 || point.y == image.get_height()/2 + image.get_height()/4 || point.y == image.get_height()/2 - image.get_height()/4:
 			var star_instance = star_scene.instantiate()
 			$ConstelationContainer.add_child(star_instance)
 			star_instance.position = Vector2(point.x * scale_factor_x, point.y * scale_factor_y)
 		count = count + 1
-	
-	var start_out = true;
+	$ConstelationContainer.rotate(rng.randf_range(-3.14,3.14))
+	var star_out = true;
 	#TODO check if there are any stars out of the canvas, if so rng the $ConstelationContainer.position again
-	while start_out:
+	while star_out:
+		star_out = false
+		$ConstelationContainer.position= Vector2(rng.randi_range(0+canvas_size.x/10, canvas_size.x-canvas_size.x/10), rng.randi_range(0+canvas_size.y/10, canvas_size.y-canvas_size.y/10))
 		for edge_point in $ConstelationContainer.get_children():
-			pass
-	for point in range(edgePoints.size()):
+			if edge_point.global_position.x > canvas_size.x - 20 or edge_point.global_position.x < 20 or edge_point.global_position.y > canvas_size.y - 20 or edge_point.global_position.y < 20:
+				star_out = true
+				print('Recalculating position')
+				break
+
+	for point in range(50):
 		var star_instance = star_scene.instantiate()
 		add_child(star_instance)
 		var new_position = Vector2.ZERO
@@ -98,12 +102,9 @@ func instantiate_stars():
 			for edge_point in $ConstelationContainer.get_children():
 				var distance_between = new_position.distance_to(edge_point.global_position)
 				if  distance_between < threshold_distance:
-					print(new_position.distance_to(edge_point.position))
 					too_close = true
-					print("Too close to an edge star")
 					break 
 		star_instance.position = new_position
-		
 
 func printEdges():
 	var count = 0

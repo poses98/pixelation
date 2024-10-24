@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=4 uid="uid://7pyql0b0tc48"]
 
 [ext_resource type="Script" path="res://scripts/image_splitter.gd" id="1_x3pmq"]
-[ext_resource type="Texture2D" uid="uid://bvnrmaomrfkel" path="res://img/ear.png" id="2_t34n5"]
+[ext_resource type="Texture2D" uid="uid://bp5a0my4brcnu" path="res://img/ethan_wardsmall.png" id="2_ysuix"]
 [ext_resource type="PackedScene" uid="uid://bowy0gq8n7ql7" path="res://scenes/star_selectable.tscn" id="3_3ja23"]
 [ext_resource type="Texture2D" uid="uid://o7u26butlivu" path="res://img/stars/bg1.png" id="4_7grkj"]
 [ext_resource type="Texture2D" uid="uid://mdtui6ipgmsy" path="res://img/stars/bg2.png" id="5_tj8rh"]
@@ -26,9 +26,9 @@ sources/1 = SubResource("TileSetAtlasSource_i52rp")
 
 [node name="ImageSplitter" type="Node2D"]
 script = ExtResource("1_x3pmq")
-image = ExtResource("2_t34n5")
+image = ExtResource("2_ysuix")
 star_scene = ExtResource("3_3ja23")
-threshold_distance = 50
+threshold_distance = 70
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
