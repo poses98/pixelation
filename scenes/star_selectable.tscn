@@ -41,14 +41,11 @@ animations = [{
 
 [node name="StarSelectable" type="Node2D"]
 script = ExtResource("1_whqaj")
-images = Array[CompressedTexture2D]([ExtResource("2_8oyl2"), ExtResource("2_pqrnr")])
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_xsyjp")
 animation = &"idle"
-frame = 1
-frame_progress = 0.534097
 
 [connection signal="select" from="." to="." method="_on_select"]
