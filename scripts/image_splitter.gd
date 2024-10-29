@@ -3,10 +3,20 @@ extends Node2D
 
 @export var image:CompressedTexture2D;
 @export var star_scene:PackedScene
-@export var threshold_distance:int
-@export var star_sounds:Array[AudioStream]
+@export var THRESHOLD_DISTANCE:int
+@export var STAR_SOUNDS:Array[AudioStream]
 
+# Enum to handle game state
+enum GAME_STATE {
+	LOADING,
+	READY,
+	PLAY,
+	PAUSE,
+	WIN,
+	OVER
+}
 
+var current_game_state = GAME_STATE.LOADING
 var size:Vector2
 var edgePoints = []
 var left_edge_points = []
@@ -16,6 +26,7 @@ var rng = RandomNumberGenerator.new()
 var constelation_node:Node2D
 var constellation_list=[]
 
+# Called when instantiated
 func _ready() -> void:
 	if !image:
 		print('No resource found')
@@ -26,10 +37,16 @@ func _ready() -> void:
 		process_edges()
 		instantiate_stars()
 		printEdges()
+		update_game_state(GAME_STATE.PLAY)
 
+# Called once per frame
 func _process(delta: float) -> void:
 	$Label.text = get_stars_remaining()
 
+# Updates game state
+func update_game_state(game_state:GAME_STATE):
+	current_game_state=game_state
+	
 # Fills the edges array depending of the given image
 func process_edges():
 	# Time measurement
@@ -83,6 +100,7 @@ func instantiate_stars():
 	reallocate_constellation()
 	instantiate_foreign_stars(50)
 
+# Intantiates stars from an specific array. If reversed is passed then it does it in reverse order
 func instantiate_stars_from_array(arr:Array, reversed:bool):
 	var canvas_size = get_viewport_rect().size
 	var scale_factor_x = canvas_size.x / size.x / 4
@@ -95,11 +113,11 @@ func instantiate_stars_from_array(arr:Array, reversed:bool):
 		var point = arr[i]
 		if i == start or i == end-1 or point.y == roundi(image.get_height()/2) or point.y == roundi(image.get_height()/2) + roundi(image.get_height()/4) or point.y == roundi(image.get_height()/2) - roundi(image.get_height()/4):
 			var star_instance = star_scene.instantiate()
-			print('Point:',point,'\tPosition in array:', i,'\tGlobal pos:',$ConstelationContainer.get_child_count(),'\tStar instance id:',star_instance.get_instance_id(),'\tStart:',start)
 			$ConstelationContainer.add_child(star_instance)
 			star_instance.position = Vector2(point.x * scale_factor_x, point.y * scale_factor_y)
 			star_instance.connect("select", _on_star_selectable_select)
 
+# Instantiate the number of stars that you pass in respecting the threshold to contellation
 func instantiate_foreign_stars(star_number:int):
 	var canvas_size = get_viewport_rect().size
 	# Instantiate foreign stars
@@ -115,11 +133,12 @@ func instantiate_foreign_stars(star_number:int):
 			too_close = false 
 			for edge_point in $ConstelationContainer.get_children():
 				var distance_between = new_position.distance_to(edge_point.global_position)
-				if  distance_between < threshold_distance:
+				if  distance_between < THRESHOLD_DISTANCE:
 					too_close = true
 					break 
 		star_instance.position = new_position
 
+# In case any star of the constellation is out it reallocates the constellation until it is not
 func reallocate_constellation():
 	var canvas_size = get_viewport_rect().size
 	var star_out = true;
@@ -132,6 +151,7 @@ func reallocate_constellation():
 				star_out = true
 				break
 
+# Prints the edges of the image in the $Sprite2D
 func printEdges():
 	var count = 0
 	var modulus = 1
@@ -142,25 +162,29 @@ func printEdges():
 	var texture = ImageTexture.create_from_image(draw_image)
 	$Sprite2D.texture = texture
 
+# Gets how many stars are remaining
 func get_stars_remaining() -> String:
 	var count = 0
 	for child in $ConstelationContainer.get_children():
 		count = count + (1 if child.get_selected() else 0)
 	return str(count) + '/' + str($ConstelationContainer.get_child_count())
 
+# Draws the line between constellation points
 func draw_constellation_line():
 	$ConstellationLine.clear_points()
 	for point in constellation_list:
 		$ConstellationLine.add_point(point.g_position)
 
+# Handler for the on selected star signal
 func _on_star_selectable_select(star_id, selected, g_position) -> void:
+	if current_game_state != GAME_STATE.PLAY:
+		return
 	if selected:
-		$AudioStreamPlayer2D.stream = star_sounds[min(constellation_list.size(),star_sounds.size()-1)]
+		$AudioStreamPlayer2D.stream = STAR_SOUNDS[min(constellation_list.size(),STAR_SOUNDS.size()-1)]
 		constellation_list.append({"star_id":star_id,"g_position":g_position})
-		print(star_id)
 	else:
 		constellation_list.erase({"star_id":star_id,"g_position":g_position})
-		$AudioStreamPlayer2D.stream = star_sounds[min(constellation_list.size(),star_sounds.size()-1)]
+		$AudioStreamPlayer2D.stream = STAR_SOUNDS[min(constellation_list.size(),STAR_SOUNDS.size()-1)]
 	$AudioStreamPlayer2D.play()
 	draw_constellation_line()
 	# Check if constellation is over
@@ -180,16 +204,13 @@ func check_solution():
 	for star_instance in $ConstelationContainer.get_children():
 		star_ids.append(star_instance.get_instance_id())
 
-	# Caso donde no hay estrellas seleccionadas
 	if selected_ids.size() == 0:
 		return false
 
-	# Verificar que todos los seleccionados estén en star_ids
 	for selected_id in selected_ids:
 		if star_ids.find(selected_id) == -1:
 			return false
 
-	# Verificar el orden circular
 	var previous_index = star_ids.find(selected_ids[0])
 	if previous_index == -1:
 		return false
@@ -212,6 +233,7 @@ func check_solution():
 	if is_valid:
 		constellation_list.append(constellation_list[0])
 		draw_constellation_line()
+		update_game_state(GAME_STATE.WIN)
 		return true
 	else:
 		return false
