@@ -6,6 +6,7 @@ var selected:bool
 var idle_animation_frame:int
 var is_clicking = false
 
+
 func _ready() -> void:
 	
 	if $AnimatedSprite2D.sprite_frames.get_frame_count('idle') > 0:
