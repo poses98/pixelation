@@ -43,7 +43,6 @@ THRESHOLD_DISTANCE = 50
 STAR_SOUNDS = Array[AudioStream]([ExtResource("4_mk4xb"), ExtResource("5_n3xvb"), ExtResource("6_vnbne"), ExtResource("7_4dtr7"), ExtResource("8_tlx6c"), ExtResource("9_b0tlx"), ExtResource("10_c5ong"), ExtResource("11_0suru"), ExtResource("12_3lxcj"), ExtResource("13_piebg"), ExtResource("14_qtpj2")])
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
 texture_filter = 1
 position = Vector2(245.665, 184.325)
 
@@ -70,3 +69,5 @@ joint_mode = 1
 round_precision = 32
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="ForeignStars" type="Node" parent="."]

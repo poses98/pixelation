@@ -123,7 +123,7 @@ func instantiate_foreign_stars(star_number:int):
 	# Instantiate foreign stars
 	for point in range(star_number):
 		var star_instance = star_scene.instantiate()
-		add_child(star_instance)
+		$ForeignStars.add_child(star_instance)
 		star_instance.connect("select", _on_star_selectable_select)
 		
 		var new_position = Vector2.ZERO
@@ -153,12 +153,8 @@ func reallocate_constellation():
 
 # Prints the edges of the image in the $Sprite2D
 func printEdges():
-	var count = 0
-	var modulus = 1
 	for i:Vector2i in edgePoints:
-		if count % modulus == 0 || i.y == 0 || i.y == image.get_height()-1:
-			draw_image.set_pixelv(i,Color.AQUA)
-		count = count + 1
+		draw_image.set_pixelv(i,Color.AQUA)
 	var texture = ImageTexture.create_from_image(draw_image)
 	$Sprite2D.texture = texture
 
