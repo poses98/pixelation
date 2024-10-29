@@ -4,6 +4,8 @@ extends Node2D
 @export var image:CompressedTexture2D;
 @export var star_scene:PackedScene
 @export var threshold_distance:int
+@export var star_sounds:Array[AudioStream]
+
 
 var size:Vector2
 var edgePoints = []
@@ -28,44 +30,44 @@ func _process(delta: float) -> void:
 	
 # Fills the edges array depending of the given image
 func process_edges():
-	edgePoints = []
-	
-	# Time measurement and opt pixels
-	var start_time = Time.get_ticks_msec()  # Tiempo de inicio
-	var pixels_saved=0
-	
-	var l_found = false
-	var reverse_adjustment = 0;
-	
+	edgePoints.clear()
+	# Time measurement
+	var start_time = Time.get_ticks_msec()
 	# Create a list with the edge of the image
-	for i in range(size.y): # i is the y coordinate!
-		for j in range(size.x): # j is the x !
-			if !l_found and (j - 1 >= 0 or j == 0):
-				if (j == 0 and !isEmptyPixel(Vector2i(j,i))) or (isEmptyPixel(Vector2i(j-1, i)) and !isEmptyPixel(Vector2i(j, i))):
-					l_found = true
-					edgePoints.append(Vector2(j, i))
-					for k in range(size.x - 1, j, -1):
-						if k + 1 < size.x and !isEmptyPixel(Vector2i(k, i)) and isEmptyPixel(Vector2i(k+1, i)):
-							pixels_saved += k - j 
-							edgePoints.append(Vector2(k, i))
-							break
-						elif k == size.x-1:
-							if !isEmptyPixel(Vector2i(k,i)):
-								pixels_saved += k - j 
-								edgePoints.append(Vector2(k, i))
-								break	
-					break 
-		l_found = false
-	var end_time = Time.get_ticks_msec()  # Tiempo de finalización
-	print("Tiempo de ejecución optimizado (ms): ", end_time - start_time)
-	print("Píxeles ahorrados: ", pixels_saved)
-	print("Pixel/ms: ", ((size.x*size.y)-pixels_saved)/(end_time-start_time))
+	for y in range(size.y):  # y coordinate
+		process_edge_line(y)
+	var end_time = Time.get_ticks_msec()
+	print("Execution time (ms): ", end_time - start_time)
 
-func isEmptyPixel(position:Vector2i):
-	if position.x < 0 or position.y > size.y - 1:
+# Process a whole line in an image
+func process_edge_line(y: int):
+	var l_found = false
+
+	for x in range(size.x):  # x coordinate
+		if !l_found and (x - 1 >= 0 or x == 0):
+			if (x == 0 and !is_empty_pixel(Vector2i(x, y))) or (is_empty_pixel(Vector2i(x - 1, y)) and !is_empty_pixel(Vector2i(x, y))):
+				l_found = true
+				edgePoints.append(Vector2(x, y))
+				find_opposite_edge(x, y)
+				break
+	l_found = false
+
+# Find the opposite edge of the image
+func find_opposite_edge(start_x: int, y: int):
+	for x in range(size.x - 1, start_x, -1):
+		if x + 1 < size.x and !is_empty_pixel(Vector2i(x, y)) and is_empty_pixel(Vector2i(x + 1, y)):
+			edgePoints.append(Vector2(x, y))
+			break
+		elif x == size.x - 1 and !is_empty_pixel(Vector2i(x, y)):
+			edgePoints.append(Vector2(x, y))
+			break
+
+# Checks is a pixel is transparent
+func is_empty_pixel(position: Vector2i) -> bool:
+	if position.x < 0 or position.y >= size.y:
 		return -1
 	else:
-		return image.get_image().get_pixel(position.x,position.y).a == 0
+		return image.get_image().get_pixel(position.x, position.y).a == 0 
 
 # Instantiates every star depending on the edgePoints array and the other stars.
 func instantiate_stars():
@@ -99,6 +101,8 @@ func instantiate_stars():
 	for point in range(50):
 		var star_instance = star_scene.instantiate()
 		add_child(star_instance)
+		star_instance.connect("select", _on_star_selectable_select)
+		
 		var new_position = Vector2.ZERO
 		var too_close = true
 		while too_close:
@@ -133,10 +137,14 @@ func draw_constellation_line():
 		$ConstellationLine.add_point(point.g_position)
 
 func _on_star_selectable_select(star_id, selected, g_position) -> void:
+	
 	if selected:
-		constellation_list.append({"star_id":star_id,"g_position":g_position})		
+		$AudioStreamPlayer2D.stream = star_sounds[min(constellation_list.size(),star_sounds.size()-1)]
+		constellation_list.append({"star_id":star_id,"g_position":g_position})
+		
 	else:
 		constellation_list.erase({"star_id":star_id,"g_position":g_position})
+		$AudioStreamPlayer2D.stream = star_sounds[min(constellation_list.size(),star_sounds.size()-1)]
+	
+	$AudioStreamPlayer2D.play()
 	draw_constellation_line()
-	
-	

@@ -1,10 +1,21 @@
-[gd_scene load_steps=9 format=4 uid="uid://7pyql0b0tc48"]
+[gd_scene load_steps=20 format=4 uid="uid://7pyql0b0tc48"]
 
 [ext_resource type="Script" path="res://scripts/image_splitter.gd" id="1_x3pmq"]
 [ext_resource type="Texture2D" uid="uid://bvnrmaomrfkel" path="res://img/ear.png" id="2_biijt"]
 [ext_resource type="PackedScene" uid="uid://bowy0gq8n7ql7" path="res://scenes/star_selectable.tscn" id="3_3ja23"]
 [ext_resource type="Texture2D" uid="uid://o7u26butlivu" path="res://img/stars/bg1.png" id="4_7grkj"]
+[ext_resource type="AudioStream" uid="uid://b7enp7tpfxm88" path="res://sound/fx/pixelation-001.wav" id="4_mk4xb"]
+[ext_resource type="AudioStream" uid="uid://cw8kccnienep0" path="res://sound/fx/pixelation-002.wav" id="5_n3xvb"]
 [ext_resource type="Texture2D" uid="uid://mdtui6ipgmsy" path="res://img/stars/bg2.png" id="5_tj8rh"]
+[ext_resource type="AudioStream" uid="uid://cgiwu3sk4qcou" path="res://sound/fx/pixelation-003.wav" id="6_vnbne"]
+[ext_resource type="AudioStream" uid="uid://ckkkx746bk5oi" path="res://sound/fx/pixelation-004.wav" id="7_4dtr7"]
+[ext_resource type="AudioStream" uid="uid://cjo3iq8sefvu5" path="res://sound/fx/pixelation-005.wav" id="8_tlx6c"]
+[ext_resource type="AudioStream" uid="uid://her38s62dyr4" path="res://sound/fx/pixelation-006.wav" id="9_b0tlx"]
+[ext_resource type="AudioStream" uid="uid://botmc6rhson72" path="res://sound/fx/pixelation-007.wav" id="10_c5ong"]
+[ext_resource type="AudioStream" uid="uid://cy0xf40yre8pk" path="res://sound/fx/pixelation-008.wav" id="11_0suru"]
+[ext_resource type="AudioStream" uid="uid://dqmbc4sgo2u57" path="res://sound/fx/pixelation-009.wav" id="12_3lxcj"]
+[ext_resource type="AudioStream" uid="uid://cij2ve64trd8m" path="res://sound/fx/pixelation-010.wav" id="13_piebg"]
+[ext_resource type="AudioStream" uid="uid://dchfk56yynwvj" path="res://sound/fx/pixelation-011.wav" id="14_qtpj2"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sd5hv"]
 texture = ExtResource("4_7grkj")
@@ -29,6 +40,7 @@ script = ExtResource("1_x3pmq")
 image = ExtResource("2_biijt")
 star_scene = ExtResource("3_3ja23")
 threshold_distance = 70
+star_sounds = Array[AudioStream]([ExtResource("4_mk4xb"), ExtResource("5_n3xvb"), ExtResource("6_vnbne"), ExtResource("7_4dtr7"), ExtResource("8_tlx6c"), ExtResource("9_b0tlx"), ExtResource("10_c5ong"), ExtResource("11_0suru"), ExtResource("12_3lxcj"), ExtResource("13_piebg"), ExtResource("14_qtpj2")])
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
@@ -54,3 +66,5 @@ vertical_alignment = 1
 z_index = -1
 width = 2.0
 default_color = Color(0.31084, 0.2166, 0.57, 1)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
